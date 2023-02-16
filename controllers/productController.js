@@ -1,9 +1,12 @@
+const { mongoose } = require('mongoose');
 const Product = require('../model/Product')
 
 // Get all products
 const product_all = async (req, res) => { 
     try {
+        console.log('products==>',req.query)
         const products = await Product.find();
+        console.log('products==>',products)
         res.json(products)
     } catch (error) {
         res.json({ message:error })
@@ -13,7 +16,8 @@ const product_all = async (req, res) => {
 // Get Single product
 const product_details = async (req, res) => { 
     try {
-        const singleProduct = await Product.findOne(req.params.productId)
+        console.log("get single product",req.params)
+        const singleProduct = await Product.findOne({_id:req.params.productId})
         res.json(singleProduct)
     } catch (error) {
         res.json({ message:error })
@@ -22,16 +26,14 @@ const product_details = async (req, res) => {
 
 // Add New product
 const product_create = async (req, res) => { 
-    const product = new Product({
-            title: req.body.title,
-            price: req.body.price,
-            image: req.body.image,
-            details: req.body.details
-    });
+    console.log(req.body)
+    const {title,image,price,details} = req.body
     try {
-        const savedProduct = await Product.save();
+        const savedProduct = await Product({title,image,price,details}).save();
+        console.log('savedProduct',savedProduct)
         res.json(savedProduct);
     } catch (error) {
+        console.log('error==?',error)
         res.status(400).send(error)
     }
 };
@@ -39,15 +41,16 @@ const product_create = async (req, res) => {
 // Update product
 const product_update = async (req, res) => {
     try {
-        const product = {
-            title: req.body.title,
-            price: req.body.price,
-            image: req.body.image,
-            details: req.body.details
-        };
+        const {title,price,image,details}=req.body;
+        // const product = {
+        //     title: req.body.title,
+        //     price: req.body.price,
+        //     image: req.body.image,
+        //     details: req.body.details
+        // };
         const updateProduct = await Product.findByIdAndUpdate(
             { _id: req.params.productId },
-            product
+            {title,price,image,details}
         );
         res.json(updateProduct);
     } catch (error) {
