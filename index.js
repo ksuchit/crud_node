@@ -1,7 +1,7 @@
 
 const express = require('express');
 const app = express();
-require('dotenv').config()
+require('dotenv').config() 
 const mongoose = require('mongoose')
 const cors=require('cors')
 const bodyparser=require('body-parser')
@@ -11,22 +11,12 @@ const cookieParser = require('cookie-parser')
 const productRoutes = require('./routes/product')
 
 // route middlewares
-
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors())
 
-
-
-
-
 console.log(' process.env.DB_CONNECT', process.env.DB_CONNECT)
-//connect to db
-//    mongoose.connect(
-//    
-//     { userUnifiedTopology: true, useNewUrlParser: true },
-//     ()=> console.log("connected to db")
-// )
+
 try {
     // Connect to the MongoDB cluster
     mongoose.connect(
@@ -42,11 +32,10 @@ try {
   dbConnection.on("error", (err) => console.log(`Connection error ${err}`));
   dbConnection.once("open", () => console.log("Connected to DB!"));
 
+app.use("/api/products", productRoutes)
 app.use(bodyparser.urlencoded())
 app.use(bodyparser.json())
 
-
-app.use("/api/products", productRoutes)
 
 // app.get("/p:id", function(req, res) {
 //     res.send("tagId is set to " + req);

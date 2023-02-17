@@ -1,15 +1,40 @@
 const { mongoose } = require('mongoose');
 const Product = require('../model/Product')
-
+console.log(Product)
 // Get all products
 const product_all = async (req, res) => { 
-    try {
-        console.log('products==>',req.query)
-        const products = await Product.find();
-        console.log('products==>',products)
-        res.json(products)
-    } catch (error) {
-        res.json({ message:error })
+    console.log(req.query)
+    if (req.query.productId) {
+        try {
+            console.log("get single product", req.query)
+            const singleProduct = await Product.findOne({ _id: req.query.productId })
+            res.json(singleProduct)
+        } catch (error) {
+            res.json({ message: error })
+        }
+    }
+    else if (req.query.price || req.query.name) {
+        try {
+            console.log("sort by-", req.query)
+            let sortBy = []
+            if (req.query.price) 
+                 sortBy = await Product.find().sort({ price: 'asc' })
+            else
+                 sortBy=await Product.find().sort({title:'asc'})
+            res.json(sortBy)
+        } catch (error) {
+            res.json({message:error})
+        }
+    }
+    else {
+        try {
+            console.log('products==>', req.query)
+            const products = await Product.find();
+            console.log('products==>', products)
+            res.json(products)
+        } catch (error) {
+            res.json({ message: error })
+        }
     }
 };
 
@@ -61,7 +86,13 @@ const product_update = async (req, res) => {
 // Delete product
 const product_delete = async (req, res) => { 
     try {
-        const deletedProduct = Product.findByIdAndDelete(req.params.productId)
+        console.log("delete by id",req.params.productId)
+        const deletedProduct = Product.findByIdAndDelete(req.params.productId, (err, data) => {
+            if (err || data===null)
+                console.log("error:", err)
+            else
+                console.log("deleted product:",data)
+        })
         res.json(deletedProduct)
     } catch (error) {
         res.json({ message: error })
