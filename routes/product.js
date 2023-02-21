@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const productController = require('../controllers/productController')
-const operations = require('../controllers/opeartions')
+const operations = require('../controllers/opeartions');
+const { register } = require("../controllers/authController");
+
 
 router.post("/",productController.product_create)
 router.get("/:productId", productController.product_details) //get perticular single product
@@ -10,5 +12,5 @@ router.delete("/:productId",productController.product_delete)
 
 // operations
 // router.get("/sortby/",operations.sortBy)
-
+router.post('/auth/registration',register)
 module.exports=router 

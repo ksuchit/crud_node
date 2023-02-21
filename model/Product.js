@@ -7,9 +7,6 @@ const productSchema = new mongoose.Schema({
     details:{ type:String, required:true }
 })
 
-const loginSchema = new mongoose.Schema({
-    email: { type: String, required: true },
-    password:{ type:Number, required:true}
-})
+
 
 module.exports = mongoose.model("Product", productSchema)
