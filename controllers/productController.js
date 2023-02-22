@@ -3,7 +3,7 @@ const Product = require('../model/Product')
 console.log(Product)
 // Get all products
 const product_all = async (req, res) => { 
-    console.log(req.query)
+    console.log("all products",req.query)
     if (req.query.productId) {
         try {
             console.log("get single product", req.query)
@@ -28,7 +28,6 @@ const product_all = async (req, res) => {
     }
     else {
         try {
-            console.log('products==>', req.query)
             const products = await Product.find();
             console.log('products==>', products)
             res.json(products)
@@ -52,8 +51,12 @@ const product_details = async (req, res) => {
 // Add New product
 const product_create = async (req, res) => { 
     console.log(req.body)
-    const {title,image,price,details} = req.body
+    const { title, image, price, details } = req.body
+    
     try {
+        if (!(title && image && price && details))
+            throw new Error('all fields are required')
+        
         const savedProduct = await Product({title,image,price,details}).save();
         console.log('savedProduct',savedProduct)
         res.json(savedProduct);

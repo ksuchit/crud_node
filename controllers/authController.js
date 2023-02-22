@@ -4,8 +4,8 @@ const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
 
 const register = async (req, res) => {
-    const {name,email,password}=req.body
     try {
+        const {name,email,password}=req.body
         if(!(name&&email&&password))
            throw new Error("all fields Required")
         // const isRegistered = await User.find()
@@ -71,6 +71,17 @@ const login = async (req, res) => {
         const user=await User.findOne({email})
         if(user && (await bcrypt.compare(password,user.password))){
             console.log("valid user")
+        
+        //generate JWT token
+        const token=jwt.sign({user_id:user._id,email},
+            process.env.PRIVATE_KEY,{
+                expiresIn:'2h'
+            })
+        console.log(token)
+        //save token
+        user.token = token;
+        res.status(201).json(user) 
+
         }
         else
            throw new Error('Email or password is wrong') 
@@ -80,7 +91,20 @@ const login = async (req, res) => {
     }
 }
 
+const deleteUser = async (req, res) => {
+    try {
+        console.log("inside deleteuser",req.params.userId)
+        const removedUser = await User.findByIdAndDelete(req.params.userId);
+        console.log("removed user",removedUser)
+        res.status(201).json(removedUser)
+    } catch (error) {
+        console.log(error)
+        res.json({message:error})
+    }
+}
+
 module.exports = {
     register,
-    login
+    login,
+    deleteUser
 }

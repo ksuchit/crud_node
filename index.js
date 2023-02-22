@@ -8,7 +8,7 @@ const bodyparser=require('body-parser')
 const cookieParser = require('cookie-parser')
 
 //import routes
-const productRoutes = require('./routes/product')
+const productRoutes = require('./routes/productRoutes')
 
 // route middlewares
 app.use(express.json())
