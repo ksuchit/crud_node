@@ -68,7 +68,8 @@ const login = async (req, res) => {
         if(!(email&&password))
            throw new Error("email & password are required")
         
-        const user=await User.findOne({email})
+        const user = await User.findOne({ email })
+        console.log("bcrypt compare",await bcrypt.compare(password,user.password))
         if(user && (await bcrypt.compare(password,user.password))){
             console.log("valid user")
         

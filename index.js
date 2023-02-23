@@ -35,6 +35,13 @@ try {
 app.use("/api/products", productRoutes)
 app.use(bodyparser.urlencoded())
 app.use(bodyparser.json())
+app.use((req, res, next) => {
+// if(res.status(404))
+//     console.log("page not found")
+
+  res.status(404).send('page not found on server')
+  res.status(500).send('internal server error 500')
+})
 
 
 // app.get("/p:id", function(req, res) {

@@ -15,5 +15,8 @@ router.delete("/:productId",productController.product_delete)
 // router.get("/sortby/",operations.sortBy)
 router.post('/auth/registration',register)
 router.post('/auth/login', login)
-router.delete('/remove-user/:userId',deleteUser)
+router.delete('/remove-user/:userId', deleteUser)
+
+
+
 module.exports=router 
