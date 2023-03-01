@@ -43,10 +43,5 @@ app.use((req, res, next) => {
   res.status(500).send('internal server error 500')
 })
 
-
-// app.get("/p:id", function(req, res) {
-//     res.send("tagId is set to " + req);
-//   });
-
 // mongoose.set('strictQuery',true) //Mongoose: the `strictQuery` option will be switched back to `false` by default in Mongoose 7.
 app.listen(4000, () => console.log('server is up and running on port: 4000!'))
