@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const productController = require('../controllers/productController')
 const operations = require('../controllers/opeartions');
-const { register, login, deleteUser } = require("../controllers/authController");
+const { register, login, deleteUser, changePassword, updateUser } = require("../controllers/authController");
 const verifyToken = require("../middleware/verifyToken");
 
 
@@ -16,7 +16,6 @@ router.delete("/:productId",productController.product_delete)
 router.post('/auth/registration',register)
 router.post('/auth/login', login)
 router.delete('/remove-user/:userId', deleteUser)
-
-
-
+router.patch('/auth/change-password',changePassword)
+router.put('/profile/update-profile',updateUser)
 module.exports=router 

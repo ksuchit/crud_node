@@ -68,7 +68,8 @@ const login = async (req, res) => {
         if(!(email&&password))
            throw new Error("email & password are required")
         
-        const user = await User.findOne({ email })
+        let user = await User.findOne({ email })
+        console.log(user)
         console.log("bcrypt compare",await bcrypt.compare(password,user.password))
         if(user && (await bcrypt.compare(password,user.password))){
             console.log("valid user")
@@ -78,11 +79,10 @@ const login = async (req, res) => {
             process.env.PRIVATE_KEY,{
                 expiresIn:'2h'
             })
-        console.log(token)
         //save token
-        user.token = token;
-        res.status(201).json(user) 
-
+        const {password,...userData}=user._doc   
+        console.log({userData,token})
+        res.status(201).json({userData,token}) 
         }
         else
            throw new Error('Email or password is wrong') 
@@ -104,8 +104,44 @@ const deleteUser = async (req, res) => {
     }
 }
 
+const changePassword = async (req,res) => {
+    try {
+        const { id, old_password, new_password } = req.body
+        const user = await User.findOne({ _id: id })
+
+        if (user && (await bcrypt.compare(old_password, user.password)))
+            console.log('verified user')
+        else
+            throw new Error("password does not match with your old password")
+        
+        const encruptedPassword=await bcrypt.hash(new_password,10)
+        const updatedUser = await User.findOneAndUpdate({ _id: id }, { password: encruptedPassword})
+        console.log(updatedUser)
+        res.status(202).json({message:"Password updated successfully"})
+    } catch (error) {
+        console.log(error)
+        res.status(422).json({message:error})
+    }
+}
+
+const updateUser = async (req, res) => {
+    try {
+        const { name, email } = req.body
+        const user = await User.findOneAndUpdate({ email }, { name, email })
+        if (!(user))
+            return res.status(403).json({statuscode:403,message:"User not found"})
+        
+        console.log(user)
+        res.status(202).json(user)
+    } catch (error) {
+        res.status(403).json(error)
+    }
+}
+
 module.exports = {
     register,
     login,
-    deleteUser
+    deleteUser,
+    changePassword,
+    updateUser
 }
