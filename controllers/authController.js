@@ -127,7 +127,7 @@ const changePassword = async (req,res) => {
 const updateUser = async (req, res) => {
     try {
         const { name, email } = req.body
-        const user = await User.findOneAndUpdate({ email }, { name, email })
+        const user = await User.findOneAndUpdate({ email }, { name, email }, { new: true })
         if (!(user))
             return res.status(403).json({statuscode:403,message:"User not found"})
         
