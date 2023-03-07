@@ -2,6 +2,7 @@
 const User = require('../model/User')
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
+const { duplicateEmailCheck } = require('../middleware/duplicateEmailCheck')
 
 const register = async (req, res) => {
     try {
@@ -32,9 +33,10 @@ const register = async (req, res) => {
         //         res.json(register)
         //     }
         // })
-        const oldUser=await User.findOne({email})
-        if(oldUser)
-           throw new Error("User is Already Registered")
+        // const oldUser=await User.findOne({email})
+        console.log("regi", await duplicateEmailCheck(email))
+        if(await duplicateEmailCheck(email))
+           return res.json({message:"User is Already Registered"})
 
         //Encrupt user password
         const encruptedPassword=await bcrypt.hash(password,10);
@@ -68,6 +70,9 @@ const login = async (req, res) => {
         if(!(email&&password))
            throw new Error("email & password are required")
         
+        if(!(await duplicateEmailCheck()))
+            return res.json({message:'User is not registered'})
+
         let user = await User.findOne({ email })
         console.log(user)
         console.log("bcrypt compare",await bcrypt.compare(password,user.password))
@@ -87,8 +92,8 @@ const login = async (req, res) => {
         else
            throw new Error('Email or password is wrong') 
     } catch (error) {
-        console.log(error)
-        res.json({message:error})
+    //    return res.status(400).send({message:'This is an error!'})
+       return res.status(400).json({error:error.message})
     }
 }
 
