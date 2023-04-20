@@ -3,12 +3,16 @@ const User = require('../model/User')
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
 const { duplicateEmailCheck } = require('../middleware/duplicateEmailCheck')
+const { registration } = require('../validations/AuthValidation')
 
 const register = async (req, res) => {
     try {
         const {name,email,password}=req.body
         if(!(name&&email&&password))
-           throw new Error("all fields Required")
+            throw new Error("all fields Required")
+        
+        const result = await registration.validate(req.body)
+        console.log(result)
         // const isRegistered = await User.find()
         // console.log(isRegistered)
         // console.log(isRegistered.find((data)=>data.email===email))

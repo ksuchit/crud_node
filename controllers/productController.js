@@ -78,7 +78,7 @@ const product_update = async (req, res) => {
         // };
         const updateProduct = await Product.findByIdAndUpdate(
             { _id: req.params.productId },
-            {title,price,image,details}
+            {title,price,image,details},{ new: true }
         );
         res.json(updateProduct);
     } catch (error) {

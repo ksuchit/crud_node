@@ -15,15 +15,15 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(cors())
 
-console.log(' process.env.DB_CONNECT', process.env.DB_CONNECT)
+console.log('process.env.DB_CONNECT', process.env.DB_CONNECT)
 
 try {
     // Connect to the MongoDB cluster
     mongoose.connect(
         process.env.DB_CONNECT,
-      { useNewUrlParser: true, useUnifiedTopology: true },
-      () => console.log(" Mongoose is connected"),
+      { useNewUrlParser: true, useUnifiedTopology: true }
     );
+    mongoose.set('strictQuery',true)
   } catch (e) {
     console.log("could not connect");
   }
